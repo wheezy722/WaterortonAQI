@@ -123,9 +123,26 @@ def main():
     """
     Runs the scheduler.
     """
-    time_of_day = "morning" if datetime.now().hour < 12 else "midday" if datetime.now().hour < 17 else "afternoon"
-    post_tweet(prepare_tweet(SENSOR_ID, time_of_day))
+    current_time = datetime.now()
+    current_hour = current_time.hour
+    current_minute = current_time.minute
+
+    # Check for emergency condition (this will always check every time the script runs)
+    pollutants = get_air_quality(SENSOR_ID)
+    if pollutants:
+        level = determine_pollution_level(pollutants)
+        if level == "emergency":
+            post_tweet(TEMPLATES["emergency"])
+
+    # Post at specific times: between 8:00-8:30 AM, 12:00-12:30 PM, 4:00-4:30 PM
+    if (current_hour == 8 and 0 <= current_minute <= 30):
+        post_tweet(prepare_tweet(SENSOR_ID, "morning"))
+    elif (current_hour == 12 and 0 <= current_minute <= 30):
+        post_tweet(prepare_tweet(SENSOR_ID, "midday"))
+    elif (current_hour == 16 and 0 <= current_minute <= 30):
+        post_tweet(prepare_tweet(SENSOR_ID, "afternoon"))
 
 if __name__ == "__main__":
     main()
+
 
