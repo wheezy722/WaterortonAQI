@@ -59,32 +59,54 @@ def get_air_quality(sensor_id):
         current_values = data.get("current", {}).get("values", [])
         pm25 = next((x["value"] for x in current_values if x["name"] == "PM2.5"), None)
         pm10 = next((x["value"] for x in current_values if x["name"] == "PM10"), None)
+        no2 = next((x["value"] for x in current_values if x["name"] == "NO2"), None)
+        no = next((x["value"] for x in current_values if x["name"] == "NO"), None)
 
-        if pm25 is None and pm10 is not None:
-            print("PM2.5 unavailable; using PM10 as fallback.")
-            pm25 = pm10
-        elif pm25 is None and pm10 is None:
-            print("No air quality data available.")
-            return None, None
+        # Handle missing data gracefully
+        pollutants = {"PM2.5": pm25, "PM10": pm10, "NO2": no2, "NO": no}
+        pollutants = {k: v for k, v in pollutants.items() if v is not None}
 
-        return pm25, pm10
+        if not pollutants:
+            print("No valid air quality data available.")
+            return None
+
+        return pollutants
     except requests.RequestException as e:
         print(f"Error fetching air quality data: {e}")
-        return None, None
+        return None
 
-def determine_pollution_level(pm25, pm10):
+def determine_pollution_level(pollutants):
     """
     Determines pollution level based on WHO guidelines.
     """
-    WHO_LIMITS = {"PM2.5": 15, "PM10": 45}
-    if pm25 > WHO_LIMITS["PM2.5"] * 2 or pm10 > WHO_LIMITS["PM10"] * 2:
+    WHO_LIMITS = {"PM2.5": 15, "PM10": 45, "NO2": 40, "NO": 25}
+
+    if not pollutants:
+        return "unknown"
+
+    emergency = any(pollutants.get(key, 0) > WHO_LIMITS[key] * 2 for key in pollutants)
+    high = any(pollutants.get(key, 0) > WHO_LIMITS[key] for key in pollutants)
+    mediocre = any(pollutants.get(key, 0) > WHO_LIMITS[key] / 2 for key in pollutants)
+
+    if emergency:
         return "emergency"
-    elif pm25 > WHO_LIMITS["PM2.5"] or pm10 > WHO_LIMITS["PM10"]:
+    elif high:
         return "high"
-    elif pm25 > WHO_LIMITS["PM2.5"] / 2 or pm10 > WHO_LIMITS["PM10"] / 2:
+    elif mediocre:
         return "mediocre"
     else:
         return "low"
+
+def prepare_tweet(sensor_id, time_of_day):
+    """
+    Prepares a tweet based on pollution levels and time of day.
+    """
+    pollutants = get_air_quality(sensor_id)
+    if not pollutants:
+        return "Air quality data is unavailable at this time. Please check back later! #AirQuality"
+
+    level = determine_pollution_level(pollutants)
+    return TEMPLATES[time_of_day][level] if level != "emergency" else TEMPLATES["emergency"]
 
 def post_tweet(text):
     """
@@ -97,54 +119,13 @@ def post_tweet(text):
     except Exception as e:
         print(f"Error posting tweet: {e}")
 
-def prepare_tweet(sensor_id, time_of_day):
-    """
-    Prepares a tweet based on pollution levels and time of day.
-    """
-    pm25, pm10 = get_air_quality(sensor_id)
-    if pm25 is None or pm10 is None:
-        return "Air quality data is unavailable at this time. Please check back later! #AirQuality"
-
-    level = determine_pollution_level(pm25, pm10)
-    return TEMPLATES[time_of_day][level] if level != "emergency" else TEMPLATES["emergency"]
-
-def check_for_emergency(sensor_id):
-    """
-    Checks air quality and tweets if pollution levels are dangerously high.
-    """
-    print("Checking for emergency pollution levels...")
-    pm25, pm10 = get_air_quality(sensor_id)
-    if pm25 is None or pm10 is None:
-        print("No air quality data available for emergency check.")
-        return
-
-    level = determine_pollution_level(pm25, pm10)
-    if level == "emergency":
-        print("Emergency detected! Posting emergency tweet.")
-        post_tweet(TEMPLATES["emergency"])
-
-def should_send_scheduled_tweet():
-    """
-    Determines whether it is one of the scheduled times to send a standard tweet.
-    Returns True if it is 8:00 AM, 12:00 PM, or 4:00 PM.
-    """
-    current_time = datetime.now().strftime("%H:%M")
-    scheduled_times = ["08:00", "12:00", "16:00"]
-    return current_time in scheduled_times
-
 def main():
-    # Check if it's a scheduled time to send a tweet
-    if should_send_scheduled_tweet():
-        print("It's a scheduled time. Sending a standard tweet...")
-        time_of_day = "morning" if datetime.now().hour == 8 else "midday" if datetime.now().hour == 12 else "afternoon"
-        scheduled_tweet = prepare_tweet(SENSOR_ID, time_of_day)
-        if scheduled_tweet:
-            post_tweet(scheduled_tweet)
-    else:
-        print("Not a scheduled time. Checking for emergencies only.")
-
-    # Perform an emergency check
-    check_for_emergency(SENSOR_ID)
+    """
+    Runs the scheduler.
+    """
+    time_of_day = "morning" if datetime.now().hour < 12 else "midday" if datetime.now().hour < 17 else "afternoon"
+    post_tweet(prepare_tweet(SENSOR_ID, time_of_day))
 
 if __name__ == "__main__":
     main()
+
