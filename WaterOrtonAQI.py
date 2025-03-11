@@ -142,9 +142,9 @@ def main():
         # Set the time of day for tweet
         if current_hour < 12:
             time_of_day = "morning"
-        elif current_hour < 17:
+        elif current_hour < 13:
             time_of_day = "midday"
-        else:
+        else:current_hour < 18:
             time_of_day = "afternoon"
 
         tweet_text = prepare_tweet(SENSOR_ID, time_of_day)
