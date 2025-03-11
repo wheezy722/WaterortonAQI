@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 import os
 import requests
-from datetime import datetime, timezone, timedelta
+from datetime import datetime
 import tweepy
-import schedule
-import time
 
 # --- Pre-Planned Tweet Templates ---
 TEMPLATES = {
@@ -31,14 +29,12 @@ TEMPLATES = {
 }
 
 # --- Load Credentials from Environment Variables ---
-# --- Twitter API Credentials ---
 TWITTER_API_KEY = os.getenv('TWITTER_API_KEY')
 TWITTER_API_SECRET_KEY = os.getenv('TWITTER_API_SECRET_KEY')
 TWITTER_ACCESS_TOKEN = os.getenv('TWITTER_ACCESS_TOKEN')
 TWITTER_ACCESS_TOKEN_SECRET = os.getenv('TWITTER_ACCESS_TOKEN_SECRET')
-
 AIRLY_API_KEY = os.getenv('AIRLY_API_KEY')
-SENSOR_ID = 118480
+SENSOR_ID = 118480  # Birmingham Road (Shops)
 
 # --- Authenticate with Twitter API ---
 client = tweepy.Client(
@@ -56,7 +52,7 @@ def get_air_quality(sensor_id):
     url = f"https://airapi.airly.eu/v2/measurements/installation?installationId={sensor_id}"
     headers = {"apikey": AIRLY_API_KEY}
     try:
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers, timeout=10)
         response.raise_for_status()
         data = response.json()
         
@@ -114,7 +110,7 @@ def prepare_tweet(sensor_id, time_of_day):
 
 def check_for_emergency(sensor_id):
     """
-    Checks air quality every 30 minutes and tweets if pollution levels are dangerously high.
+    Checks air quality and tweets if pollution levels are dangerously high.
     """
     print("Checking for emergency pollution levels...")
     pm25, pm10 = get_air_quality(sensor_id)
@@ -147,17 +143,8 @@ def main():
     else:
         print("Not a scheduled time. Checking for emergencies only.")
 
-    # Schedule emergency checks every 30 minutes
-    schedule.every(30).minutes.do(check_for_emergency, SENSOR_ID)
-
-    print("Starting scheduler...")
-    while True:
-        try:
-            print("Scheduler is running... Waiting for the next task.")  # Heartbeat log
-            schedule.run_pending()
-            time.sleep(60)  # Wait for 60 seconds before checking again
-        except Exception as e:
-            print(f"Error in the main loop: {e}")
+    # Perform an emergency check
+    check_for_emergency(SENSOR_ID)
 
 if __name__ == "__main__":
     main()
