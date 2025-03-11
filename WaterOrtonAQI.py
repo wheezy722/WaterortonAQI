@@ -32,14 +32,13 @@ TEMPLATES = {
 
 # --- Load Credentials from Environment Variables ---
 # --- Twitter API Credentials ---
-TWITTER_API_KEY = 'znzNSOMENuCesvmn9UYBXXK9I'
-TWITTER_API_SECRET_KEY = 'Zgtip5cm6pAxNtz7oEh4LBBBA0pz6kqku4yk1yIHco9xuyUSAC'
-TWITTER_ACCESS_TOKEN = '1898488712742514688-m9YjgZJgJYKIfRyYg5SCtVFAn8YsrI'
-TWITTER_ACCESS_TOKEN_SECRET = 'P8ly0EEPu8wejOut6ezFlDJSF1ZQH8lreojqw3X1CpbX6'
+TWITTER_API_KEY = os.getenv('TWITTER_API_KEY')
+TWITTER_API_SECRET_KEY = os.getenv('TWITTER_API_SECRET_KEY')
+TWITTER_ACCESS_TOKEN = os.getenv('TWITTER_ACCESS_TOKEN')
+TWITTER_ACCESS_TOKEN_SECRET = os.getenv('TWITTER_ACCESS_TOKEN_SECRET')
 
-# --- Airly API Credentials & Sensor ID ---
-AIRLY_API_KEY = 'tilLSxKhvD9n6CyuOwz3oVq1qE4IKqqB'
-SENSOR_ID = 118480 # Birmingham Road (Shops)
+AIRLY_API_KEY = os.getenv('AIRLY_API_KEY')
+SENSOR_ID = 118480
 
 # --- Authenticate with Twitter API ---
 client = tweepy.Client(
