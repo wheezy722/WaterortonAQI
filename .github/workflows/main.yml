@@ -32,4 +32,4 @@ jobs:
         TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
         AIRLY_API_KEY: ${{ secrets.AIRLY_API_KEY }}
       run: |
-        python waterortonaqi.py
+        python WaterOrtonAQI.py
