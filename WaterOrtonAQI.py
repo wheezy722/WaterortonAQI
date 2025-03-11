@@ -70,6 +70,7 @@ def get_air_quality(sensor_id):
             print("No valid air quality data available.")
             return None
 
+        print(f"Fetched pollutants data: {pollutants}")
         return pollutants
     except requests.RequestException as e:
         print(f"Error fetching air quality data: {e}")
@@ -106,7 +107,11 @@ def prepare_tweet(sensor_id, time_of_day):
         return "Air quality data is unavailable at this time. Please check back later! #AirQuality"
 
     level = determine_pollution_level(pollutants)
-    return TEMPLATES[time_of_day][level] if level != "emergency" else TEMPLATES["emergency"]
+    print(f"Determined pollution level: {level}")
+    
+    tweet = TEMPLATES[time_of_day][level] if level != "emergency" else TEMPLATES["emergency"]
+    print(f"Prepared tweet: {tweet}")
+    return tweet
 
 def post_tweet(text):
     """
@@ -123,26 +128,32 @@ def main():
     """
     Runs the scheduler.
     """
-    current_time = datetime.now()
-    current_hour = current_time.hour
-    current_minute = current_time.minute
+    current_hour = datetime.now().hour
+    current_minute = datetime.now().minute
 
-    # Check for emergency condition (this will always check every time the script runs)
-    pollutants = get_air_quality(SENSOR_ID)
-    if pollutants:
-        level = determine_pollution_level(pollutants)
-        if level == "emergency":
-            post_tweet(TEMPLATES["emergency"])
+    # Debug print statements for time checking
+    print(f"Current time: {current_hour}:{current_minute}")
 
-    # Post at specific times: between 8:00-8:30 AM, 12:00-12:30 PM, 4:00-4:30 PM
-    if (current_hour == 8 and 0 <= current_minute <= 30):
-        post_tweet(prepare_tweet(SENSOR_ID, "morning"))
-    elif (current_hour == 12 and 0 <= current_minute <= 30):
-        post_tweet(prepare_tweet(SENSOR_ID, "midday"))
-    elif (current_hour == 16 and 0 <= current_minute <= 30):
-        post_tweet(prepare_tweet(SENSOR_ID, "afternoon"))
+    # Determine time of day and check if within tweet window (8-8:30am, 12-12:30pm, 4-4:30pm)
+    if (current_hour == 8 and 0 <= current_minute <= 30) or \
+       (current_hour == 12 and 0 <= current_minute <= 30) or \
+       (current_hour == 16 and 0 <= current_minute <= 30):
+        print("Time is within tweet window.")
+        # Set the time of day for tweet
+        if current_hour < 12:
+            time_of_day = "morning"
+        elif current_hour < 17:
+            time_of_day = "midday"
+        else:
+            time_of_day = "afternoon"
+
+        tweet_text = prepare_tweet(SENSOR_ID, time_of_day)
+        post_tweet(tweet_text)
+    else:
+        print("Not within tweet window. No tweet will be sent.")
 
 if __name__ == "__main__":
     main()
+
 
 
