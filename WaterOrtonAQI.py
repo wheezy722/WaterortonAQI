@@ -3,6 +3,7 @@ import os
 import requests
 from datetime import datetime
 import tweepy
+import time  # You can keep time import but we will remove while loop
 
 # --- Pre-Planned Tweet Templates ---
 TEMPLATES = {
@@ -126,7 +127,7 @@ def post_tweet(text):
 
 def main():
     """
-    Runs the scheduler.
+    Runs the scheduler once based on the current time.
     """
     current_hour = datetime.now().hour
     current_minute = datetime.now().minute
@@ -144,7 +145,7 @@ def main():
             time_of_day = "morning"
         elif current_hour < 13:
             time_of_day = "midday"
-        else current_hour < 17:
+        elif current_hour < 17:
             time_of_day = "afternoon"
 
         tweet_text = prepare_tweet(SENSOR_ID, time_of_day)
