@@ -279,6 +279,21 @@ def main():
 
 if __name__ == "__main__":
     main()
+Make sure that the indentation is consistent throughout the function. Python relies heavily on indentation to define the structure of the code, so even a small inconsistency can cause errors.
+
+Try running the code again and let me know if you encounter any other issues!
+
+
+Edit in Pages
+
+
+
+
+AI-generated content may be incorrect
+
+
+if __name__ == "__main__":
+    main()
 
         tweet_text = prepare_tweet(SENSOR_ID, time_of_day)
         post_tweet(tweet_text)
