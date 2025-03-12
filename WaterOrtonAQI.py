@@ -263,17 +263,22 @@ def main():
     print(f"Current time: {current_hour}:{current_minute}")
 
     # Determine time of day and check if within tweet window (8-10:30am, 12-1:30pm, 4-5:30pm)
-    if (current_hour == 8 and 10 <= current_minute <= 30) or \
-       (current_hour == 12 and 13 <= current_minute <= 30) or \
-       (current_hour == 16 and 17 <= current_minute <= 30):
-        print("Time is within tweet window.")
-        # Set the time of day for tweet
-        if current_hour < 12:
-            time_of_day = "morning"
-        elif current_hour < 13:
-            time_of_day = "midday"
-        elif current_hour < 17:
-            time_of_day = "afternoon"
+    if (8 <= current_hour < 10) or (current_hour == 10 and current_minute <= 30):
+        time_of_day = "morning"
+    elif (12 <= current_hour < 13) or (current_hour == 13 and current_minute <= 30):
+        time_of_day = "midday"
+    elif (16 <= current_hour < 17) or (current_hour == 17 and current_minute <= 30):
+        time_of_day = "afternoon"
+    else:
+        print("Not within tweet window. No tweet will be sent.")
+        return
+
+    print("Time is within tweet window.")
+    tweet_text = prepare_tweet(SENSOR_ID, time_of_day)
+    post_tweet(tweet_text)
+
+if __name__ == "__main__":
+    main()
 
         tweet_text = prepare_tweet(SENSOR_ID, time_of_day)
         post_tweet(tweet_text)
