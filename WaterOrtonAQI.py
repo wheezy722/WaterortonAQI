@@ -135,7 +135,7 @@ def main():
     # Debug print statements for time checking
     print(f"Current time: {current_hour}:{current_minute}")
 
-    # Determine time of day and check if within tweet window (8-8:30am, 12-12:30pm, 4-4:30pm)
+    # Determine time of day and check if within tweet window (8-10:30am, 12-1:30pm, 4-5:30pm)
     if (current_hour == 8 and 10 <= current_minute <= 30) or \
        (current_hour == 12 and 13 <= current_minute <= 30) or \
        (current_hour == 16 and 17 <= current_minute <= 30):
