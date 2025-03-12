@@ -136,9 +136,9 @@ def main():
     print(f"Current time: {current_hour}:{current_minute}")
 
     # Determine time of day and check if within tweet window (8-8:30am, 12-12:30pm, 4-4:30pm)
-    if (current_hour == 8 and 0 <= current_minute <= 30) or \
-       (current_hour == 12 and 0 <= current_minute <= 30) or \
-       (current_hour == 16 and 0 <= current_minute <= 30):
+    if (current_hour == 8 and 10 <= current_minute <= 30) or \
+       (current_hour == 12 and 13 <= current_minute <= 30) or \
+       (current_hour == 16 and 17 <= current_minute <= 30):
         print("Time is within tweet window.")
         # Set the time of day for tweet
         if current_hour < 12:
