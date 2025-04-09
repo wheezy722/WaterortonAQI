@@ -315,16 +315,16 @@ def main():
     now = datetime.now()
     current_hour = now.hour
 
-    if 8 <= current_hour < 9:
+    if 8 <= current_hour < 10:
         print("Within morning window. Sending sensor tweet.")
         sensor_tweet_job()
-    elif 12 <= current_hour < 13:
+    elif 12 <= current_hour < 15:
         print("Within midday window. Sending sensor tweet.")
         sensor_tweet_job()
-    elif 16 <= current_hour < 17:
+    elif 16 <= current_hour < 19:
         print("Within afternoon window. Sending sensor tweet.")
         sensor_tweet_job()
-    elif 18 <= current_hour < 19:
+    elif 19 <= current_hour < 22:
         print("Within evening window. Sending fact tweet.")
         fact_tweet_job()
     else:
