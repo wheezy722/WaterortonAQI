@@ -16,7 +16,7 @@ def get_time_of_day():
         return "this Lunchtime"
     elif 15 <= hour < 17
         return "this evening"
-else: 
+    else: 
         return "this evening"
 
 TEMPLATES = {
