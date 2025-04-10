@@ -14,7 +14,7 @@ def get_time_of_day():
         return "this morning"
     elif 12 <= hour < 14:
         return "this Lunchtime"
-    elif 15 <= Hour < 17
+    elif 15 <= hour < 17
         return "this evening"
 else: 
         return "this evening"
