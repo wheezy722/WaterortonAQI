@@ -8,13 +8,15 @@ import tweepy
 # --- Dynamic Tweet Pools ---
 
 def get_time_of_day():
-    """Returns 'this morning', 'this afternoon', or 'this evening' based on current time."""
+    """Returns 'this morning', 'this Lunchtime', or 'this evening' based on current time."""
     hour = datetime.now().hour
-    if 5 <= hour < 12:
+    if 9 <= hour < 12:
         return "this morning"
-    elif 12 <= hour < 17:
-        return "this afternoon"
-    else:
+    elif 12 <= hour < 14:
+        return "this Lunchtime"
+    elif 15 <= Hour < 17
+        return "this evening"
+else: 
         return "this evening"
 
 TEMPLATES = {
