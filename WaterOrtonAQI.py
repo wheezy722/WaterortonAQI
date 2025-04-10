@@ -10,11 +10,11 @@ import tweepy
 def get_time_of_day():
     """Returns 'this morning', 'this Lunchtime', or 'this evening' based on current time."""
     hour = datetime.now().hour
-    if 9 <= hour < 12:
+    if 7 <= hour < 8:
         return "this morning"
-    elif 12 <= hour < 14:
+    elif 12 <= hour < 13:
         return "this Lunchtime"
-    elif 15 <= hour < 17:
+    elif 17 <= hour < 18:
         return "this evening"
     else:
         return "this evening"
