@@ -42,7 +42,7 @@ TEMPLATES = {
         "🍃 Low pollution: {time_of_day}'s air feels invigorating—make the most of it outside.",
         "🍃 Low pollution: Such crisp air {time_of_day} makes for a beautiful day to enjoy nature."
     ],
-    "moderate": [
+    "mediocre": [
         "⚠️ Moderate pollution: Water Orton's air quality is moderate {time_of_day}. Sensitive individuals may want to stay indoors.",
         "⚠️ Moderate pollution: Air quality in Water Orton is fair but manageable {time_of_day}. Take precautions if spending time outdoors.",
         "⚠️ Moderate pollution: Moderate pollution in Water Orton means {time_of_day} is better for shorter outdoor activities.",
