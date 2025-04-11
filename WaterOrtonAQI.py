@@ -7,6 +7,7 @@ import tweepy
 import logging
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+import json  # Add this import
 
 # --- Dynamic Tweet Pools ---
 
@@ -181,7 +182,6 @@ TWITTER_ACCESS_TOKEN_SECRET = os.getenv('TWITTER_ACCESS_TOKEN_SECRET')
 AIRLY_API_KEY = os.getenv('AIRLY_API_KEY')
 
 # --- Google Sheets Credentials and Configuration ---
-GOOGLE_SHEETS_CLIENT_SECRET_FILE = 'client_secret.json'  # Ensure this file is in the same directory
 GOOGLE_SHEETS_NAME = 'Air Quality Data'  # Replace with your Google Sheet name
 GOOGLE_SHEETS_WORKSHEET_NAME = 'Water Orton'  # Replace with your worksheet name
 
@@ -341,12 +341,33 @@ def fact_tweet_job():
     logging.info(f"Fact Tweet: {tweet_text}")
     post_tweet(tweet_text)
 
+def get_google_sheets_client():
+    """Authenticates with Google Sheets using GitHub secrets."""
+    try:
+        # Get the credentials from the environment variable (GitHub Secret)
+        creds_json = os.environ.get("GOOGLE_SHEETS_CREDENTIALS")
+        if not creds_json:
+            raise ValueError("GOOGLE_SHEETS_CREDENTIALS secret not found")
+
+        # Load the credentials as a JSON object
+        creds_dict = json.loads(creds_json)
+
+        # Use the dictionary to create credentials
+        creds = ServiceAccountCredentials.from_service_account_info(creds_dict)
+        client = gspread.authorize(creds)
+        return client
+    except Exception as e:
+        logging.error(f"Error authenticating with Google Sheets: {e}")
+        return None
+
 def append_to_sheet(data):
     """Appends data to the Google Sheet."""
     try:
-        scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-        creds = ServiceAccountCredentials.from_json_keyfile_name(GOOGLE_SHEETS_CLIENT_SECRET_FILE, scope)
-        client = gspread.authorize(creds)
+        client = get_google_sheets_client()  # Use the new function
+        if not client:
+            logging.error("Failed to get Google Sheets client. Aborting append.")
+            return
+
         sheet = client.open(GOOGLE_SHEETS_NAME).worksheet(GOOGLE_SHEETS_WORKSHEET_NAME)
 
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
