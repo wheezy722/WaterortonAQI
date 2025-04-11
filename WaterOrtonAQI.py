@@ -8,113 +8,105 @@ import tweepy
 # --- Dynamic Tweet Pools ---
 
 def get_time_of_day():
-    """Returns 'this morning', 'this Lunchtime', or 'this evening' based on current time."""
+    """Returns 'this morning', 'this lunchtime', or 'this evening' based on current time."""
     hour = datetime.now().hour
     if 7 <= hour < 12:
         return "this morning"
-    elif 12 <= hour < 14:
-        return "this Lunchtime"
-    elif 16 <= hour < 18:
+    elif 12 <= hour < 15:
+        return "this lunchtime"
+    elif 15 <= hour < 20:
         return "this evening"
     else:
         return "this evening"
 
 TEMPLATES = {
     "low": [
-        # Location-Specific (7 Tweets)
-        "The air in Water Orton is fresh and clean {time_of_day}. A great day for outdoor activities.",
-        "Water Orton is enjoying excellent air quality {time_of_day}. Perfect for a morning jog or walk.",
-        "Crisp air and clear skies in Water Orton make {time_of_day} ideal for outdoor plans.",
-        "With pristine air in Water Orton {time_of_day}, it's a wonderful time to enjoy nature.",
-        "Water Orton's air is perfect {time_of_day}. Take a deep breath and enjoy the fresh conditions.",
-        "Clear and clean air surrounds Water Orton {time_of_day}. A fantastic day to be outdoors.",
-        "The air quality in Water Orton is as good as it gets {time_of_day}. Time to make the most of it.",
-        # General (13 Tweets)
-        "Fresh air and sunshine make {time_of_day} perfect for outdoor fun.",
-        "Excellent air conditions {time_of_day} mean it's a great time to connect with nature.",
-        "The air feels crisp and clean {time_of_day}. Perfect for exploring the outdoors.",
-        "{Time_of_day}'s air quality is fantastic. Time to step outside and enjoy!",
-        "Clean air like this {time_of_day} deserves appreciation—spend time outdoors.",
-        "It's a rare {time_of_day} of fresh, pristine air. A perfect excuse to go outside.",
-        "Breathe deeply and enjoy {time_of_day}'s excellent air quality.",
-        "With air this clean {time_of_day}, it's an ideal day for outdoor relaxation.",
-        "Perfect air quality {time_of_day}—great for any outdoor adventure.",
-        "Fresh, clean air {time_of_day} means it's a great time for outdoor activities.",
-        "The outdoors is calling with air quality this refreshing {time_of_day}.",
-        "{Time_of_day}'s air feels invigorating—make the most of it outside.",
-        "Such crisp air {time_of_day} makes for a beautiful day to enjoy nature."
+        "🍃 Low pollution: The air in Water Orton is fresh and clean {time_of_day}. A great day for outdoor activities.",
+        "🍃 Low pollution: Water Orton is enjoying excellent air quality {time_of_day}. Perfect for a morning jog or walk.",
+        "🍃 Low pollution: Crisp air and clear skies in Water Orton make {time_of_day} ideal for outdoor plans.",
+        "🍃 Low pollution: With pristine air in Water Orton {time_of_day}, it's a wonderful time to enjoy nature.",
+        "🍃 Low pollution: Water Orton's air is perfect {time_of_day}. Take a deep breath and enjoy the fresh conditions.",
+        "🍃 Low pollution: Clear and clean air surrounds Water Orton {time_of_day}. A fantastic day to be outdoors.",
+        "🍃 Low pollution: The air quality in Water Orton is as good as it gets {time_of_day}. Time to make the most of it.",
+        "🍃 Low pollution: Fresh air and sunshine make {time_of_day} perfect for outdoor fun.",
+        "🍃 Low pollution: Excellent air conditions {time_of_day} mean it's a great time to connect with nature.",
+        "🍃 Low pollution: The air feels crisp and clean {time_of_day}. Perfect for exploring the outdoors.",
+        "🍃 Low pollution: {time_of_day}'s air quality is fantastic. Time to step outside and enjoy!",
+        "🍃 Low pollution: Clean air like this {time_of_day} deserves appreciation—spend time outdoors.",
+        "🍃 Low pollution: It's a rare {time_of_day} of fresh, pristine air. A perfect excuse to go outside.",
+        "🍃 Low pollution: Breathe deeply and enjoy {time_of_day}'s excellent air quality.",
+        "🍃 Low pollution: With air this clean {time_of_day}, it's an ideal day for outdoor relaxation.",
+        "🍃 Low pollution: Perfect air quality {time_of_day}—great for any outdoor adventure.",
+        "🍃 Low pollution: Fresh, clean air {time_of_day} means it's a great time for outdoor activities.",
+        "🍃 Low pollution: The outdoors is calling with air quality this refreshing {time_of_day}.",
+        "🍃 Low pollution: {time_of_day}'s air feels invigorating—make the most of it outside.",
+        "🍃 Low pollution: Such crisp air {time_of_day} makes for a beautiful day to enjoy nature."
     ],
-    "mediocre": [
-        # Location-Specific (7 Tweets)
-        "Water Orton's air quality is moderate {time_of_day}. Sensitive individuals may want to stay indoors.",
-        "Air quality in Water Orton is fair but manageable {time_of_day}. Take precautions if spending time outdoors.",
-        "Moderate pollution in Water Orton means {time_of_day} is better for shorter outdoor activities.",
-        "Water Orton's air is hovering in the moderate range {time_of_day}. Limit exposure if sensitive.",
-        "Conditions in Water Orton are fair {time_of_day}—consider breaks indoors during outdoor plans.",
-        "{Time_of_day}'s air quality in Water Orton isn't perfect, but it's manageable for most.",
-        "If sensitive to pollution, take it slow in Water Orton {time_of_day} as conditions are mediocre.",
-        # General (13 Tweets)
-        "Moderate air quality {time_of_day}—light outdoor activities are fine, but pace yourself.",
-        "Conditions are fair {time_of_day}, but prolonged exposure outdoors may cause discomfort.",
-        "Average pollution levels persist {time_of_day}—sensitive groups should take it easy.",
-        "Not the best air {time_of_day}, but manageable for most. Take breaks if necessary.",
-        "Moderate air pollution {time_of_day} calls for reduced exertion outdoors, especially for sensitive individuals.",
-        "A fair air day means {time_of_day}'s outdoor plans are fine but should be adjusted as needed.",
-        "Air pollution is manageable {time_of_day}—pace yourself and stay hydrated.",
-        "Outdoor activities are okay {time_of_day}, but sensitive groups should monitor exposure.",
-        "Consider balancing outdoor and indoor activities during {time_of_day}'s moderate air quality.",
-        "Mild pollution levels persist {time_of_day}—take precautions if you feel irritation outdoors.",
-        "Outdoor exposure {time_of_day} is manageable, but frequent breaks indoors may help.",
-        "Sensitive groups should consider alternative plans indoors {time_of_day} to limit exposure.",
-        "Moderate air conditions {time_of_day} mean light outdoor activities are ideal."
+    "moderate": [
+        "⚠️ Moderate pollution: Water Orton's air quality is moderate {time_of_day}. Sensitive individuals may want to stay indoors.",
+        "⚠️ Moderate pollution: Air quality in Water Orton is fair but manageable {time_of_day}. Take precautions if spending time outdoors.",
+        "⚠️ Moderate pollution: Moderate pollution in Water Orton means {time_of_day} is better for shorter outdoor activities.",
+        "⚠️ Moderate pollution: Water Orton's air is hovering in the moderate range {time_of_day}. Limit exposure if sensitive.",
+        "⚠️ Moderate pollution: Conditions in Water Orton are fair {time_of_day}—consider breaks indoors during outdoor plans.",
+        "⚠️ Moderate pollution: {time_of_day}'s air quality in Water Orton isn't perfect, but it's manageable for most.",
+        "⚠️ Moderate pollution: If sensitive to pollution, take it slow in Water Orton {time_of_day} as conditions are mediocre.",
+        "⚠️ Moderate pollution: Moderate air quality {time_of_day}—light outdoor activities are fine, but pace yourself.",
+        "⚠️ Moderate pollution: Conditions are fair {time_of_day}, but prolonged exposure outdoors may cause discomfort.",
+        "⚠️ Moderate pollution: Average pollution levels persist {time_of_day}—sensitive groups should take it easy.",
+        "⚠️ Moderate pollution: Not the best air {time_of_day}, but manageable for most. Take breaks if necessary.",
+        "⚠️ Moderate pollution: Moderate air pollution {time_of_day} calls for reduced exertion outdoors, especially for sensitive individuals.",
+        "⚠️ Moderate pollution: A fair air day means {time_of_day}'s outdoor plans are fine but should be adjusted as needed.",
+        "⚠️ Moderate pollution: Air pollution is manageable {time_of_day}—pace yourself and stay hydrated.",
+        "⚠️ Moderate pollution: Outdoor activities are okay {time_of_day}, but sensitive groups should monitor exposure.",
+        "⚠️ Moderate pollution: Consider balancing outdoor and indoor activities during {time_of_day}'s moderate air quality.",
+        "⚠️ Moderate pollution: Mild pollution levels persist {time_of_day}—take precautions if you feel irritation outdoors.",
+        "⚠️ Moderate pollution: Outdoor exposure {time_of_day} is manageable, but frequent breaks indoors may help.",
+        "⚠️ Moderate pollution: Sensitive groups should consider alternative plans indoors {time_of_day} to limit exposure.",
+        "⚠️ Moderate pollution: Moderate air conditions {time_of_day} mean light outdoor activities are ideal."
     ],
     "high": [
-        # Location-Specific (7 Tweets)
-        "Air quality in Water Orton is poor {time_of_day}. Limit outdoor plans where possible.",
-        "Pollution levels are elevated in Water Orton {time_of_day}—take precautions and reduce exposure.",
-        "Water Orton's air {time_of_day} is unhealthy. Masks are recommended for outdoor activities.",
-        "Poor air quality in Water Orton {time_of_day} means sensitive groups should stay indoors.",
-        "Pollution in Water Orton is concerning {time_of_day}—plan your day with safety in mind.",
-        "{Time_of_day}'s air is unhealthy in Water Orton. Avoid exertion and limit exposure outside.",
-        "If you're sensitive to pollution, Water Orton's air {time_of_day} requires extra precautions.",
-        # General (13 Tweets)
-        "Poor air quality persists {time_of_day}—stay safe and minimize time outdoors.",
-        "High pollution levels {time_of_day} call for reduced outdoor exposure and frequent breaks indoors.",
-        "{Time_of_day}'s air isn't healthy—consider masks and air purifiers if necessary.",
-        "Limit your time outdoors {time_of_day} as poor air conditions persist.",
-        "Sensitive individuals should avoid outdoor exposure entirely {time_of_day} during high pollution.",
-        "Elevated pollution levels {time_of_day} mean indoor activities are a safer option.",
-        "Poor air quality {time_of_day} could impact breathing comfort—take precautions as needed.",
-        "Minimize outdoor exposure {time_of_day} where possible to avoid irritation from pollution.",
-        "With unhealthy air conditions {time_of_day}, prioritize safety indoors.",
-        "Poor air quality {time_of_day} means it's best to avoid vigorous activities outdoors.",
-        "Take care {time_of_day}—pollution levels may cause discomfort for some.",
-        "Outdoor activities should be kept to a minimum {time_of_day} during poor air quality.",
-        "Protect your health {time_of_day}—reduce outdoor exposure and consider indoor alternatives."
+        "🚨 High pollution: Air quality in Water Orton is poor {time_of_day}. Limit outdoor plans where possible.",
+        "🚨 High pollution: Pollution levels are elevated in Water Orton {time_of_day}—take precautions and reduce exposure.",
+        "🚨 High pollution: Water Orton's air {time_of_day} is unhealthy. Masks are recommended for outdoor activities.",
+        "🚨 High pollution: Poor air quality in Water Orton {time_of_day} means sensitive groups should stay indoors.",
+        "🚨 High pollution: Pollution in Water Orton is concerning {time_of_day}—plan your day with safety in mind.",
+        "🚨 High pollution: {time_of_day}'s air is unhealthy in Water Orton. Avoid exertion and limit exposure outside.",
+        "🚨 High pollution: If you're sensitive to pollution, Water Orton's air {time_of_day} requires extra precautions.",
+        "🚨 High pollution: Poor air quality persists {time_of_day}—stay safe and minimize time outdoors.",
+        "🚨 High pollution: High pollution levels {time_of_day} call for reduced outdoor exposure and frequent breaks indoors.",
+        "🚨 High pollution: {time_of_day}'s air isn't healthy—consider masks and air purifiers if necessary.",
+        "🚨 High pollution: Limit your time outdoors {time_of_day} as poor air conditions persist.",
+        "🚨 High pollution: Sensitive individuals should avoid outdoor exposure entirely {time_of_day} during high pollution.",
+        "🚨 High pollution: Elevated pollution levels {time_of_day} mean indoor activities are a safer option.",
+        "🚨 High pollution: Poor air quality {time_of_day} could impact breathing comfort—take precautions as needed.",
+        "🚨 High pollution: Minimize outdoor exposure {time_of_day} where possible to avoid irritation from pollution.",
+        "🚨 High pollution: With unhealthy air conditions {time_of_day}, prioritize safety indoors.",
+        "🚨 High pollution: Poor air quality {time_of_day} means it's best to avoid vigorous activities outdoors.",
+        "🚨 High pollution: Take care {time_of_day}—pollution levels may cause discomfort for some.",
+        "🚨 High pollution: Outdoor activities should be kept to a minimum {time_of_day} during poor air quality.",
+        "🚨 High pollution: Protect your health {time_of_day}—reduce outdoor exposure and consider indoor alternatives."
     ],
     "emergency": [
-        # Location-Specific (7 Tweets)
-        "Dangerous air pollution levels detected in Water Orton {time_of_day}—avoid outdoor exposure entirely.",
-        "Critical pollution persists in Water Orton {time_of_day}. Everyone is advised to stay indoors.",
-        "Emergency alert for Water Orton—air quality is hazardous {time_of_day}. Limit all exposure immediately.",
-        "Severe air conditions in Water Orton {time_of_day} pose significant health risks. Take care indoors.",
-        "Water Orton's air {time_of_day} is dangerously unhealthy—close all windows and prioritize safety.",
-        "Extremely high pollution levels in Water Orton {time_of_day} mean masks and air purifiers are essential.",
-        "Hazardous air quality persists in Water Orton {time_of_day}. Remain vigilant and stay indoors.",
-        # General (13 Tweets)
-        "Critical air pollution levels {time_of_day} require everyone to limit outdoor exposure entirely.",
-        "Severe conditions {time_of_day} mean everyone should remain indoors for safety.",
-        "Avoid outdoor exertion {time_of_day}—air quality poses serious health risks today.",
-        "Emergency air pollution alert—stay indoors {time_of_day} and minimize exposure completely.",
-        "Hazardous air conditions {time_of_day} call for vigilance—close windows and use air purifiers if possible.",
-        "With air this unhealthy {time_of_day}, outdoor exposure should be avoided entirely.",
-        "Masks are mandatory {time_of_day} as air pollution reaches dangerous levels.",
-        "Severe air pollution persists {time_of_day}—monitor symptoms and prioritize health indoors.",
-        "Everyone is advised to remain indoors {time_of_day} and avoid exertion due to extreme pollution.",
-        "Serious air quality concerns {time_of_day} mean limiting all exposure and staying safe indoors.",
-        "Emergency air conditions {time_of_day} pose significant risks—remain vigilant.",
-        "Unhealthy air quality persists {time_of_day}—close windows and doors to reduce exposure.",
-        "Dangerous pollution levels {time_of_day} require staying indoors and minimizing risks completely."
+        "🚨 Dangerous air pollution levels detected in Water Orton {time_of_day}—avoid outdoor exposure entirely.🚨",
+        "🚨 Critical pollution persists in Water Orton {time_of_day}. Everyone is advised to stay indoors.🚨",
+        "🚨 Emergency alert for Water Orton—air quality is hazardous {time_of_day}. Limit all exposure immediately.🚨",
+        "🚨 Severe air conditions in Water Orton {time_of_day} pose significant health risks. Take care indoors.🚨",
+        "🚨 Water Orton's air {time_of_day} is dangerously unhealthy—close all windows and prioritize safety.🚨",
+        "🚨 Extremely high pollution levels in Water Orton {time_of_day} mean masks and air purifiers are essential.🚨",
+        "🚨 Hazardous air quality persists in Water Orton {time_of_day}. Remain vigilant and stay indoors.🚨",
+        "🚨 Critical air pollution levels {time_of_day} require everyone to limit outdoor exposure entirely.🚨",
+        "🚨 Severe conditions {time_of_day} mean everyone should remain indoors for safety.🚨",
+        "🚨 Avoid outdoor exertion {time_of_day}—air quality poses serious health risks today.🚨",
+        "🚨 Emergency air pollution alert—stay indoors {time_of_day} and minimize exposure completely.🚨",
+        "🚨 Hazardous air conditions {time_of_day} call for vigilance—close windows and use air purifiers if possible.🚨",
+        "🚨 With air this unhealthy {time_of_day}, outdoor exposure should be avoided entirely.🚨",
+        "🚨 Masks are mandatory {time_of_day} as air pollution reaches dangerous levels.🚨",
+        "🚨 Severe air pollution persists {time_of_day}—monitor symptoms and prioritize health indoors.🚨",
+        "🚨 Everyone is advised to remain indoors {time_of_day} and avoid exertion due to extreme pollution.🚨",
+        "🚨 Serious air quality concerns {time_of_day} mean limiting all exposure and staying safe indoors.🚨",
+        "🚨 Emergency air conditions {time_of_day} pose significant risks—remain vigilant.🚨",
+        "🚨 Unhealthy air quality persists {time_of_day}—close windows and doors to reduce exposure.🚨",
+        "🚨 Dangerous pollution levels {time_of_day} require staying indoors and minimizing risks completely.🚨"
     ]
 }
 
