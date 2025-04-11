@@ -266,7 +266,7 @@ def prepare_sensor_tweet():
     Determines the overall pollution level and randomly selects a tweet
     from the corresponding pool. If an outlier sensor exists, a note is appended.
     """
-    time_of_day = get_time_day()
+    time_of_day = get_time_of_day()
     results = get_air_quality_for_all_sensors(SENSORS)
     if not results:
         return "Air quality data is unavailable at this time. Please check back later."
