@@ -6,7 +6,7 @@ import random
 import tweepy
 import logging
 import gspread
-from oauth2client.service_account import ServiceAccountCredentials
+from google.oauth2 import service_account  # Changed import
 import json  # Add this import
 
 # --- Dynamic Tweet Pools ---
@@ -352,8 +352,8 @@ def get_google_sheets_client():
         # Load the credentials as a JSON object
         creds_dict = json.loads(creds_json)
 
-        # Use the dictionary to create credentials
-        creds = ServiceAccountCredentials.from_service_account_info(creds_dict)
+        # Use the dictionary to create credentials (CHANGED)
+        creds = service_account.Credentials.from_service_account_info(creds_dict)
         client = gspread.authorize(creds)
         return client
     except Exception as e:
