@@ -252,24 +252,6 @@ def determine_pollution_level(pollutants):
                 level = "mediocre"
     return level
 
-#Example of how to use the new function.
-def main():
-    sensor_data = get_air_quality_for_all_sensors(SENSORS)
-    if sensor_data:
-        for sensor in sensor_data:
-            tweet_pollutants = sensor['pollutants_tweet']
-            all_pollutants = sensor['pollutants_all']
-            #Use tweet_pollutants for your tweet logic
-            level = determine_pollution_level(tweet_pollutants)
-            print(f"Sensor: {sensor['sensor_name']}, Level: {level}")
-            #use all_pollutants for google sheets.
-            print(f"All Pollutants: {all_pollutants}")
-    else:
-        print("Failed to retrieve sensor data.")
-
-if __name__ == "__main__":
-    main()
-
 def prepare_sensor_tweet():
     """
     Prepares a tweet based on sensor data.
@@ -280,26 +262,41 @@ def prepare_sensor_tweet():
     results = get_air_quality_for_all_sensors(SENSORS)
     if not results:
         return "Air quality data is unavailable at this time. Please check back later."
-    avg_data, max_data = results
+
+    # Use pollutants_tweet for tweet logic
+    avg_data_tweet = {}
+    max_data_tweet = {"pollutants": {}} #initialise with empty dict to prevent errors.
+    max_sensor_name = ""
+    for sensor_data in results:
+        for pollutant, value in sensor_data["pollutants_tweet"].items():
+            avg_data_tweet.setdefault(pollutant, []).append(value)
+        if sensor_data['pollutants_tweet'] and max(sensor_data['pollutants_tweet'].values(), default=0) > max(max_data_tweet["pollutants"].values(), default=0):
+            max_data_tweet["pollutants"] = sensor_data["pollutants_tweet"]
+            max_sensor_name = sensor_data["sensor_name"]
+
+    if avg_data_tweet:
+        avg_data = {k: sum(v) / len(v) for k, v in avg_data_tweet.items()}
+    else:
+        return "Air quality data is unavailable at this time. Please check back later."
+
     level_avg = determine_pollution_level(avg_data)
-    level_max = determine_pollution_level(max_data["pollutants"])
+    level_max = determine_pollution_level(max_data_tweet["pollutants"])
+
     overall_level = level_avg
     note = ""
     if level_max != level_avg:
         overall_level = level_max
-        note = f" Note: {max_data['sensor_name']} reports higher pollution levels."
-    
-    # Select a template and format it with the time of day
+        note = f" Note: {max_sensor_name} reports higher pollution levels."
+
     template = random.choice(TEMPLATES[overall_level])
-    
-    # Handle capitalization for time_of_day when it appears at the start of a sentence
+
     formatted_time = time_of_day
     if '{Time_of_day}' in template:
         formatted_time = time_of_day[0].upper() + time_of_day[1:]
         tweet = template.format(time_of_day=time_of_day, Time_of_day=formatted_time)
     else:
         tweet = template.format(time_of_day=time_of_day)
-    
+
     return tweet + note
 
 def prepare_fact_tweet():
@@ -339,10 +336,10 @@ def fact_tweet_job():
 def main():
     """
     Checks the current time and sends a tweet if within one of the designated windows:
-      - Morning sensor tweet between 08:00 and 09:00
-      - Midday sensor tweet between 12:00 and 13:00
-      - Afternoon sensor tweet between 16:00 and 17:00
-      - Fact tweet between 18:00 and 19:00
+        - Morning sensor tweet between 08:00 and 09:00
+        - Midday sensor tweet between 12:00 and 13:00
+        - Afternoon sensor tweet between 16:00 and 17:00
+        - Fact tweet between 18:00 and 19:00
     If the current time is outside any window, nothing is sent.
     """
     now = datetime.now()
