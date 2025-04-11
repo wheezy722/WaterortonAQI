@@ -5,9 +5,6 @@ from datetime import datetime
 import random
 import tweepy
 import logging
-import gspread
-from google.oauth2 import service_account
-import json
 
 # --- Dynamic Tweet Pools ---
 
