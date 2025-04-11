@@ -15,11 +15,11 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    # Step 2: Explicitly install Python 3 (if needed)
+    # Step 2: Explicitly install Python 3.9 (Robust)
     - name: Install Python 3.9
       run: |
-        sudo apt-get update
-        sudo apt-get install -y python3.9 python3.9-venv
+        sudo apt-get update -y  # Update package lists
+        sudo apt-get install -y --no-install-recommends python3.9 python3.9-venv python3.9-distutils
 
     # Step 3: Set up Python environment
     - name: Set up Python
