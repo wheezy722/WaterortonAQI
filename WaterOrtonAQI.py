@@ -6,8 +6,8 @@ import random
 import tweepy
 import logging
 import gspread
-from google.oauth2 import service_account  # Changed import
-import json  # Add this import
+from google.oauth2 import service_account
+import json
 
 # --- Dynamic Tweet Pools ---
 
@@ -266,7 +266,7 @@ def prepare_sensor_tweet():
     Determines the overall pollution level and randomly selects a tweet
     from the corresponding pool. If an outlier sensor exists, a note is appended.
     """
-    time_of_day = get_time_of_day()
+    time_of_day = get_time_day()
     results = get_air_quality_for_all_sensors(SENSORS)
     if not results:
         return "Air quality data is unavailable at this time. Please check back later."
@@ -339,7 +339,7 @@ def sensor_tweet_job():
 def fact_tweet_job():
     tweet_text = prepare_fact_tweet()
     logging.info(f"Fact Tweet: {tweet_text}")
-    post_tweet(tweet_text)
+    post_tweet(text)
 
 def get_google_sheets_client():
     """Authenticates with Google Sheets using GitHub secrets."""
