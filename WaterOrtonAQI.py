@@ -336,7 +336,7 @@ def sensor_tweet_job():
 def fact_tweet_job():
     tweet_text = prepare_fact_tweet()
     logging.info(f"Fact Tweet: {tweet_text}")
-    post_tweet(text)
+    post_tweet(tweet_text) # Changed "text" to "tweet_text"
 
 def get_google_sheets_client():
     """Authenticates with Google Sheets using GitHub secrets."""
