@@ -15,28 +15,20 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    # Step 2: Explicitly install Python 3.9 from deadsnakes PPA
-    - name: Install Python 3.9 from deadsnakes
-      run: |
-        sudo apt-get update -y
-        sudo apt-get install -y software-properties-common
-        sudo add-apt-repository ppa:deadsnakes/ppa -y
-        sudo apt-get install -y python3.9 python3.9-venv
-
-    # Step 3: Set up Python environment
+    # Step 2: Set up Python environment (Standard apt-get)
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.9'
 
-    # Step 4: Create and activate a virtual environment
+    # Step 3: Create and activate a virtual environment
     - name: Create Virtual Environment
       run: |
         python3.9 -m venv .venv
         source .venv/bin/activate
         python -m pip install --upgrade pip
 
-    # Step 5: Install dependencies (Simplified, ONLY Twitter)
+    # Step 4: Install dependencies (Simplified, ONLY Twitter)
     - name: Install Dependencies
       run: |
         source .venv/bin/activate
@@ -44,7 +36,7 @@ jobs:
         python -m pip --version
         python --version
 
-    # Step 6: Run the air quality script (Twitter ONLY)
+    # Step 5: Run the air quality script (Twitter ONLY)
     - name: Run Air Quality Script
       run: |
         source .venv/bin/activate
@@ -56,4 +48,3 @@ jobs:
         TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
         AIRLY_API_KEY: ${{ secrets.AIRLY_API_KEY }}
         #GOOGLE_SHEETS_CREDENTIALS: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS }}  # REMOVED
-      #if: github.event_name == 'schedule' # Only run on scheduled events
