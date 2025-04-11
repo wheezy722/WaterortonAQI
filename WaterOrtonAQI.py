@@ -4,6 +4,7 @@ import requests
 from datetime import datetime
 import random
 import tweepy
+import logging
 
 # --- Dynamic Tweet Pools ---
 
@@ -359,6 +360,48 @@ def main():
         fact_tweet_job()
     else:
         print("Current time not in any tweet window. No tweet will be sent.")
+def sensor_tweet_job():
+    tweet_text = prepare_sensor_tweet()
+    logging.info(f"Sensor Tweet: {tweet_text}")
+    post_tweet(tweet_text)
+
+def fact_tweet_job():
+    tweet_text = prepare_fact_tweet()
+    logging.info(f"Fact Tweet: {tweet_text}")
+    post_tweet(tweet_text)
+
+def post_tweet(text):
+    client = tweepy.Client(
+        consumer_key=TWITTER_API_KEY,
+        consumer_secret=TWITTER_API_SECRET_KEY,
+        access_token=TWITTER_ACCESS_TOKEN,
+        access_token_secret=TWITTER_ACCESS_TOKEN_SECRET
+    )
+    try:
+        response = client.create_tweet(text=text)
+        tweet_id = response.data.get("id") if response.data else "unknown"
+        logging.info(f"Tweet posted successfully! Tweet ID: {tweet_id}")
+    except Exception as e:
+        logging.error(f"Error posting tweet: {e}")
+
+def main():
+    now = datetime.now()
+    current_hour = now.hour
+
+    if 8 <= current_hour < 9:
+        logging.info("Within morning window. Sending sensor tweet.")
+        sensor_tweet_job()
+    elif 12 <= current_hour < 13:
+        logging.info("Within midday window. Sending sensor tweet.")
+        sensor_tweet_job()
+    elif 16 <= current_hour < 17:
+        logging.info("Within afternoon window. Sending sensor tweet.")
+        sensor_tweet_job()
+    elif 19 <= current_hour < 20:
+        logging.info("Within evening window. Sending fact tweet.")
+        fact_tweet_job()
+    else:
+        logging.info("Current time not in any tweet window. No tweet will be sent.")
 
 if __name__ == "__main__":
     main()
