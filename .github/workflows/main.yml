@@ -36,20 +36,20 @@ jobs:
         source .venv/bin/activate
         python -m pip install --upgrade pip
 
-    # Step 5: Install dependencies (Simplified, WITHOUT google-auth-oauth2)
+    # Step 5: Install dependencies (Simplified)
     - name: Install Dependencies
       run: |
         source .venv/bin/activate
-        python -m pip install requests gspread google-auth tweepy
+        python -m pip install requests gspread google-auth tweepy  # Install together
+        python -m pip install google-auth-oauth2 --no-deps       # Install separately
         python -m pip --version
         python --version
 
-    # Step 6: Run the air quality script (with a NO-OP for Google Sheets)
+    # Step 6: Run the air quality script
     - name: Run Air Quality Script
       run: |
         source .venv/bin/activate
-        echo "Skipping Google Sheets functionality due to installation issues."
-        #python WaterOrtonAQI.py  # Comment out the original call
+        python WaterOrtonAQI.py  # UNCOMMENT THIS LINE!
       env:
         TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
         TWITTER_API_SECRET_KEY: ${{ secrets.TWITTER_API_SECRET_KEY }}
