@@ -19,7 +19,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.x'
+        python-version: '3.9'  # Be specific, '3.x' can be unpredictable
 
     # Step 3: Cache Python dependencies for faster runs
     - name: Cache Python packages
@@ -44,5 +44,5 @@ jobs:
         TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
         TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
         AIRLY_API_KEY: ${{ secrets.AIRLY_API_KEY }}
-      run: |
-        python WaterOrtonAQI.py
+        GOOGLE_SHEETS_CREDENTIALS: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS }}  #<-- CRUCIAL ADDITION!
+      run: python WaterOrtonAQI.py
