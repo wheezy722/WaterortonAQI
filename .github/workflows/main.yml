@@ -15,11 +15,13 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    # Step 2: Explicitly install Python 3.9 (Robust)
-    - name: Install Python 3.9
+    # Step 2: Install Python 3.9 from deadsnakes PPA
+    - name: Install Python 3.9 from deadsnakes
       run: |
-        sudo apt-get update -y  # Update package lists
-        sudo apt-get install -y --no-install-recommends python3.9 python3.9-venv python3.9-distutils
+        sudo apt-get update -y
+        sudo apt-get install -y software-properties-common
+        sudo add-apt-repository ppa:deadsnakes/ppa -y
+        sudo apt-get install -y python3.9 python3.9-venv
 
     # Step 3: Set up Python environment
     - name: Set up Python
