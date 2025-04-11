@@ -15,23 +15,29 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    # Step 2: Set up Python environment
+    # Step 2: Explicitly install Python 3 (if needed)
+    - name: Install Python 3.9
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y python3.9 python3.9-venv
+
+    # Step 3: Set up Python environment
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.9'  # Be specific
+        python-version: '3.9'
 
-    # Step 3: Create and activate a virtual environment
+    # Step 4: Create and activate a virtual environment
     - name: Create Virtual Environment
       run: |
-        python -m venv .venv
-        source .venv/bin/activate  # For Linux/macOS
+        python3.9 -m venv .venv
+        source .venv/bin/activate
         python -m pip install --upgrade pip
 
-    # Step 4: Install dependencies (within the virtual environment, no cache)
+    # Step 5: Install dependencies (within the virtual environment, no cache)
     - name: Install Dependencies
       run: |
-        source .venv/bin/activate  # For Linux/macOS
+        source .venv/bin/activate
         python -m pip install --no-cache requests
         python -m pip install --no-cache gspread
         python -m pip install --no-cache google-auth
@@ -40,10 +46,10 @@ jobs:
         python -m pip --version
         python --version
 
-    # Step 5: Run the air quality script
+    # Step 6: Run the air quality script
     - name: Run Air Quality Script
       run: |
-        source .venv/bin/activate  # For Linux/macOS
+        source .venv/bin/activate
         python WaterOrtonAQI.py
       env:
         TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
