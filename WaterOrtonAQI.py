@@ -186,9 +186,10 @@ SENSORS = [
     {"id": 118484, "name": "Watton Lane"}
 ]
 
-def get_air_quality(sensor):
+ def get_air_quality(sensor):
     """
     Fetches air quality data from the Airly API for a single sensor.
+    Returns a dictionary containing specific pollutants for tweet logic and all pollutants for Google Sheets.
     """
     sensor_id = sensor["id"]
     url = f"https://airapi.airly.eu/v2/measurements/installation?installationId={sensor_id}"
@@ -198,12 +199,20 @@ def get_air_quality(sensor):
         response.raise_for_status()
         data = response.json()
         current_values = data.get("current", {}).get("values", [])
+
+        # Extract specific pollutants for tweet logic
         pm25 = next((x["value"] for x in current_values if x["name"] == "PM2.5"), None)
         pm10 = next((x["value"] for x in current_values if x["name"] == "PM10"), None)
         no2  = next((x["value"] for x in current_values if x["name"] == "NO2"), None)
         no   = next((x["value"] for x in current_values if x["name"] == "NO"), None)
-        pollutants = {"PM2.5": pm25, "PM10": pm10, "NO2": no2, "NO": no}
-        return {"sensor_name": sensor["name"], "pollutants": {k: v for k, v in pollutants.items() if v is not None}}
+        pollutants_tweet = {"PM2.5": pm25, "PM10": pm10, "NO2": no2, "NO": no}
+
+        # Return both specific pollutants and all pollutants
+        return {
+            "sensor_name": sensor["name"],
+            "pollutants_tweet": {k: v for k, v in pollutants_tweet.items() if v is not None},
+            "pollutants_all": current_values
+        }
     except requests.RequestException as e:
         print(f"Error fetching data for sensor {sensor_id}: {e}")
         return None
@@ -211,24 +220,14 @@ def get_air_quality(sensor):
 def get_air_quality_for_all_sensors(sensors):
     """
     Aggregates air quality data from all sensors.
-    Returns a tuple: (average pollutant readings, sensor data with the highest reading).
+    Returns a list of dictionaries, each containing sensor name, specific pollutants, and all pollutants.
     """
     all_results = []
     for sensor in sensors:
         result = get_air_quality(sensor)
         if result:
             all_results.append(result)
-    if not all_results:
-        return None
-    aggregated = {}
-    for result in all_results:
-        for pollutant, value in result["pollutants"].items():
-            aggregated.setdefault(pollutant, []).append(value)
-    avg_data = {k: sum(v)/len(v) for k, v in aggregated.items()}
-    def max_reading(result):
-        return max(result["pollutants"].values()) if result["pollutants"] else 0
-    max_data = max(all_results, key=max_reading)
-    return avg_data, max_data
+    return all_results
 
 def determine_pollution_level(pollutants):
     """
@@ -252,6 +251,24 @@ def determine_pollution_level(pollutants):
             elif value > limits["moderate"] and level not in ("high", "emergency"):
                 level = "mediocre"
     return level
+
+#Example of how to use the new function.
+def main():
+    sensor_data = get_air_quality_for_all_sensors(SENSORS)
+    if sensor_data:
+        for sensor in sensor_data:
+            tweet_pollutants = sensor['pollutants_tweet']
+            all_pollutants = sensor['pollutants_all']
+            #Use tweet_pollutants for your tweet logic
+            level = determine_pollution_level(tweet_pollutants)
+            print(f"Sensor: {sensor['sensor_name']}, Level: {level}")
+            #use all_pollutants for google sheets.
+            print(f"All Pollutants: {all_pollutants}")
+    else:
+        print("Failed to retrieve sensor data.")
+
+if __name__ == "__main__":
+    main()
 
 def prepare_sensor_tweet():
     """
