@@ -186,7 +186,7 @@ SENSORS = [
     {"id": 118484, "name": "Watton Lane"}
 ]
 
- def get_air_quality(sensor):
+def get_air_quality(sensor):
     """
     Fetches air quality data from the Airly API for a single sensor.
     Returns a dictionary containing specific pollutants for tweet logic and all pollutants for Google Sheets.
