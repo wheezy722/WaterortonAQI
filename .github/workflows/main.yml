@@ -19,7 +19,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.9'  # Be specific, '3.x' can be unpredictable
+        python-version: '3.9'  # Be specific
 
     # Step 3: Cache Python dependencies for faster runs
     - name: Cache Python packages
@@ -30,13 +30,17 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-pip-
 
-    # Step 4: Install dependencies from requirements.txt (with upgrade and check)
+    # Step 4: Install dependencies (Targeted and with no-cache)
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip --version  # Check pip version
-        python --version         # Check Python version
-        pip install -U requests gspread google-auth google-auth-oauth2 tweepy
+        python -m pip install --no-cache requests  # Install individually
+        python -m pip install --no-cache gspread
+        python -m pip install --no-cache google-auth
+        python -m pip install --no-cache google-auth-oauth2
+        python -m pip install --no-cache tweepy
+        python -m pip --version
+        python --version
 
     # Step 5: Run the air quality script
     - name: Run Air Quality Script
@@ -46,5 +50,5 @@ jobs:
         TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
         TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
         AIRLY_API_KEY: ${{ secrets.AIRLY_API_KEY }}
-        GOOGLE_SHEETS_CREDENTIALS: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS }}  #<-- CRUCIAL ADDITION!
+        GOOGLE_SHEETS_CREDENTIALS: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS }}
       run: python WaterOrtonAQI.py
