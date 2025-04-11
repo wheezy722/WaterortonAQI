@@ -215,7 +215,7 @@ def get_air_quality(sensor):
             "pollutants_all": current_values
         }
     except requests.RequestException as e:
-        print(f"Error fetching data for sensor {sensor_id}: {e}")
+        logging.error(f"Error fetching data for sensor {sensor_id}: {e}")
         return None
 
 def get_air_quality_for_all_sensors(sensors):
@@ -320,18 +320,18 @@ def post_tweet(text):
     try:
         response = client.create_tweet(text=text)
         tweet_id = response.data.get("id") if response.data else "unknown"
-        print(f"Tweet posted successfully! Tweet ID: {tweet_id}")
+        logging.info(f"Tweet posted successfully! Tweet ID: {tweet_id}")
     except Exception as e:
-        print(f"Error posting tweet: {e}")
+        logging.error(f"Error posting tweet: {e}")
 
 def sensor_tweet_job():
     tweet_text = prepare_sensor_tweet()
-    print(f"Sensor Tweet: {tweet_text}")
+    logging.info(f"Sensor Tweet: {tweet_text}")
     post_tweet(tweet_text)
 
 def fact_tweet_job():
     tweet_text = prepare_fact_tweet()
-    print(f"Fact Tweet: {tweet_text}")
+    logging.info(f"Fact Tweet: {tweet_text}")
     post_tweet(tweet_text)
 
 def main():
@@ -343,48 +343,6 @@ def main():
         - Fact tweet between 18:00 and 19:00
     If the current time is outside any window, nothing is sent.
     """
-    now = datetime.now()
-    current_hour = now.hour
-
-    if 8 <= current_hour < 9:
-        print("Within morning window. Sending sensor tweet.")
-        sensor_tweet_job()
-    elif 12 <= current_hour < 13:
-        print("Within midday window. Sending sensor tweet.")
-        sensor_tweet_job()
-    elif 16 <= current_hour < 17:
-        print("Within afternoon window. Sending sensor tweet.")
-        sensor_tweet_job()
-    elif 19 <= current_hour < 20:
-        print("Within evening window. Sending fact tweet.")
-        fact_tweet_job()
-    else:
-        print("Current time not in any tweet window. No tweet will be sent.")
-def sensor_tweet_job():
-    tweet_text = prepare_sensor_tweet()
-    logging.info(f"Sensor Tweet: {tweet_text}")
-    post_tweet(tweet_text)
-
-def fact_tweet_job():
-    tweet_text = prepare_fact_tweet()
-    logging.info(f"Fact Tweet: {tweet_text}")
-    post_tweet(tweet_text)
-
-def post_tweet(text):
-    client = tweepy.Client(
-        consumer_key=TWITTER_API_KEY,
-        consumer_secret=TWITTER_API_SECRET_KEY,
-        access_token=TWITTER_ACCESS_TOKEN,
-        access_token_secret=TWITTER_ACCESS_TOKEN_SECRET
-    )
-    try:
-        response = client.create_tweet(text=text)
-        tweet_id = response.data.get("id") if response.data else "unknown"
-        logging.info(f"Tweet posted successfully! Tweet ID: {tweet_id}")
-    except Exception as e:
-        logging.error(f"Error posting tweet: {e}")
-
-def main():
     now = datetime.now()
     current_hour = now.hour
 
@@ -404,4 +362,6 @@ def main():
         logging.info("Current time not in any tweet window. No tweet will be sent.")
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     main()
+
