@@ -36,12 +36,12 @@ jobs:
         source .venv/bin/activate
         python -m pip install --upgrade pip
 
-    # Step 5: Install dependencies (within the virtual environment, using a different approach)
+    # Step 5: Install dependencies (Simplified)
     - name: Install Dependencies
       run: |
         source .venv/bin/activate
-        python -m pip install --no-cache requests gspread google-auth tweepy  # Install most libraries together
-        python -m pip install --no-cache --no-deps google-auth-oauth2      # Install oauth2 separately, no deps
+        python -m pip install requests gspread google-auth tweepy  # Install together
+        python -m pip install google-auth-oauth2 --no-deps       # Install separately
         python -m pip --version
         python --version
 
