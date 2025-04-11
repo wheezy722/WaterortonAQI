@@ -5,6 +5,8 @@ from datetime import datetime
 import random
 import tweepy
 import logging
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 
 # --- Dynamic Tweet Pools ---
 
@@ -178,6 +180,11 @@ TWITTER_ACCESS_TOKEN = os.getenv('TWITTER_ACCESS_TOKEN')
 TWITTER_ACCESS_TOKEN_SECRET = os.getenv('TWITTER_ACCESS_TOKEN_SECRET')
 AIRLY_API_KEY = os.getenv('AIRLY_API_KEY')
 
+# --- Google Sheets Credentials and Configuration ---
+GOOGLE_SHEETS_CLIENT_SECRET_FILE = 'client_secret.json'  # Ensure this file is in the same directory
+GOOGLE_SHEETS_NAME = 'Air Quality Data'  # Replace with your Google Sheet name
+GOOGLE_SHEETS_WORKSHEET_NAME = 'Water Orton'  # Replace with your worksheet name
+
 # --- Sensors List ---
 SENSORS = [
     {"id": 118480, "name": "Birmingham Road "},
@@ -334,6 +341,26 @@ def fact_tweet_job():
     logging.info(f"Fact Tweet: {tweet_text}")
     post_tweet(tweet_text)
 
+def append_to_sheet(data):
+    """Appends data to the Google Sheet."""
+    try:
+        scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+        creds = ServiceAccountCredentials.from_json_keyfile_name(GOOGLE_SHEETS_CLIENT_SECRET_FILE, scope)
+        client = gspread.authorize(creds)
+        sheet = client.open(GOOGLE_SHEETS_NAME).worksheet(GOOGLE_SHEETS_WORKSHEET_NAME)
+
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        row = [timestamp, data['sensor_name']]
+
+        for pollutant in data['pollutants_all']:
+            row.append(pollutant.get('value'))
+
+        sheet.append_row(row)
+        logging.info("Data appended to Google Sheet successfully.")
+    except Exception as e:
+        logging.error(f"Error appending to Google Sheet: {e}")
+
 def main():
     """
     Checks the current time and sends a tweet if within one of the designated windows:
@@ -345,6 +372,10 @@ def main():
     """
     now = datetime.now()
     current_hour = now.hour
+
+    all_sensor_data = get_air_quality_for_all_sensors(SENSORS)
+    for sensor_data in all_sensor_data:
+        append_to_sheet(sensor_data)
 
     if 8 <= current_hour < 9:
         logging.info("Within morning window. Sending sensor tweet.")
@@ -364,4 +395,3 @@ def main():
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     main()
-
