@@ -178,9 +178,7 @@ TWITTER_ACCESS_TOKEN = os.getenv('TWITTER_ACCESS_TOKEN')
 TWITTER_ACCESS_TOKEN_SECRET = os.getenv('TWITTER_ACCESS_TOKEN_SECRET')
 AIRLY_API_KEY = os.getenv('AIRLY_API_KEY')
 
-# --- Google Sheets Credentials and Configuration ---
-GOOGLE_SHEETS_NAME = 'Air Quality Data'  # Replace with your Google Sheet name
-GOOGLE_SHEETS_WORKSHEET_NAME = 'Water Orton'  # Replace with your worksheet name
+
 
 # --- Sensors List ---
 SENSORS = [
@@ -194,7 +192,7 @@ SENSORS = [
 def get_air_quality(sensor):
     """
     Fetches air quality data from the Airly API for a single sensor.
-    Returns a dictionary containing specific pollutants for tweet logic and all pollutants for Google Sheets.
+    Returns a dictionary containing specific pollutants for tweet logic.
     """
     sensor_id = sensor["id"]
     url = f"https://airapi.airly.eu/v2/measurements/installation?installationId={sensor_id}"
@@ -208,24 +206,27 @@ def get_air_quality(sensor):
         # Extract specific pollutants for tweet logic
         pm25 = next((x["value"] for x in current_values if x["name"] == "PM2.5"), None)
         pm10 = next((x["value"] for x in current_values if x["name"] == "PM10"), None)
-        no2  = next((x["value"] for x in current_values if x["name"] == "NO2"), None)
-        no   = next((x["value"] for x in current_values if x["name"] == "NO"), None)
+        no2 = next((x["value"] for x in current_values if x["name"] == "NO2"), None)
+        no = next((x["value"] for x in current_values if x["name"] == "NO"), None)
         pollutants_tweet = {"PM2.5": pm25, "PM10": pm10, "NO2": no2, "NO": no}
 
-        # Return both specific pollutants and all pollutants
+
+
+        # Return  pollutants for tweet
         return {
             "sensor_name": sensor["name"],
             "pollutants_tweet": {k: v for k, v in pollutants_tweet.items() if v is not None},
-            "pollutants_all": current_values
         }
     except requests.RequestException as e:
         logging.error(f"Error fetching data for sensor {sensor_id}: {e}")
         return None
 
+
+
 def get_air_quality_for_all_sensors(sensors):
     """
     Aggregates air quality data from all sensors.
-    Returns a list of dictionaries, each containing sensor name, specific pollutants, and all pollutants.
+    Returns a list of dictionaries, each containing sensor name, and  pollutants.
     """
     all_results = []
     for sensor in sensors:
@@ -338,46 +339,7 @@ def fact_tweet_job():
     logging.info(f"Fact Tweet: {tweet_text}")
     post_tweet(tweet_text) # Changed "text" to "tweet_text"
 
-def get_google_sheets_client():
-    """Authenticates with Google Sheets using GitHub secrets."""
-    try:
-        # Get the credentials from the environment variable (GitHub Secret)
-        creds_json = os.environ.get("GOOGLE_SHEETS_CREDENTIALS")
-        if not creds_json:
-            raise ValueError("GOOGLE_SHEETS_CREDENTIALS secret not found")
 
-        # Load the credentials as a JSON object
-        creds_dict = json.loads(creds_json)
-
-        # Use the dictionary to create credentials (CHANGED)
-        creds = service_account.Credentials.from_service_account_info(creds_dict)
-        client = gspread.authorize(creds)
-        return client
-    except Exception as e:
-        logging.error(f"Error authenticating with Google Sheets: {e}")
-        return None
-
-def append_to_sheet(data):
-    """Appends data to the Google Sheet."""
-    try:
-        client = get_google_sheets_client()  # Use the new function
-        if not client:
-            logging.error("Failed to get Google Sheets client. Aborting append.")
-            return
-
-        sheet = client.open(GOOGLE_SHEETS_NAME).worksheet(GOOGLE_SHEETS_WORKSHEET_NAME)
-
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-        row = [timestamp, data['sensor_name']]
-
-        for pollutant in data['pollutants_all']:
-            row.append(pollutant.get('value'))
-
-        sheet.append_row(row)
-        logging.info("Data appended to Google Sheet successfully.")
-    except Exception as e:
-        logging.error(f"Error appending to Google Sheet: {e}")
 
 def main():
     """
@@ -391,9 +353,7 @@ def main():
     now = datetime.now()
     current_hour = now.hour
 
-    all_sensor_data = get_air_quality_for_all_sensors(SENSORS)
-    for sensor_data in all_sensor_data:
-        append_to_sheet(sensor_data)
+
 
     if 8 <= current_hour < 9:
         logging.info("Within morning window. Sending sensor tweet.")
@@ -413,3 +373,4 @@ def main():
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     main()
+
