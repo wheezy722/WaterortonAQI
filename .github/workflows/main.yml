@@ -3,7 +3,7 @@ name: Water Orton Air Quality Bot
 on:
   schedule:
     # Schedule the script to run every 15 minutes
-    - cron: "*/15 * * * *"
+    - cron: "*/45 * * * *"
   workflow_dispatch: # Allows manual triggering of the workflow
 
 jobs:
