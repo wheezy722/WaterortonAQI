@@ -41,7 +41,7 @@ TEMPLATES = {
         "🍃 Low pollution: Fresh, clean air {time_of_day} means it's a great time for outdoor activities.",
         "🍃 Low pollution: The outdoors is calling with air quality this refreshing {time_of_day}.",
         "🍃 Low pollution: {time_of_day}'s air feels invigorating—make the most of it outside.",
-        "🍃 Low pollution: Such crisp air {time_of_day} makes for a beautiful day to enjoy nature."
+        "🍃 Low pollution: Such crisp air {time_of_day} makes for a beautiful day to enjoy nature. "
     ],
     "mediocre": [
         "⚠️ Moderate pollution: Water Orton's air quality is moderate {time_of_day}. Sensitive individuals may want to stay indoors.",
@@ -373,5 +373,6 @@ def main():
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     main()
+
 
 
