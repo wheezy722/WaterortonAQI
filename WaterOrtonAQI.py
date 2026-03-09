@@ -169,7 +169,108 @@ FACTS = [
     "Enviromental Insight: - Indoor pollution—from cooking, smoking, etc.—can be as harmful as outdoor air pollution.",
     "Enviromental Insight: - Rainfall can temporarily improve air quality by washing pollutants from the atmosphere.",
     "Enviromental Insight: - Transitioning to renewable energy sources, like wind and solar, helps reduce emissions but more importantly, increases the quality of the air we breathe."
+
+"Water Orton Data Insight: - The highest NO2 level recorded so far was 245.65 µg/m³ on 2 June 2025. This exceeds DEFRA's emergency pollution threshold of 200 µg/m³.",
+
+"Water Orton Data Insight: - On 15 May 2025, NO2 levels spiked to 216.54 µg/m³. Sudden peaks like this are usually linked to heavy traffic or stagnant air conditions.",
+
+"Water Orton Data Insight: - On 16 April 2025, NO2 levels reached 199.86 µg/m³ — just below DEFRA's emergency pollution level.",
+
+"Water Orton Data Insight: - The highest PM10 reading recorded so far reached 412.58 µg/m³ on 12 October 2025 — a major particulate spike.",
+
+"Water Orton Data Insight: - The average NO2 level measured across all village sensors is around 33 µg/m³.",
+
+"Water Orton Data Insight: - The Mytton Road sensor records the highest average NO2 levels in the village at roughly 45 µg/m³.",
+
+"Water Orton Data Insight: - Watton Lane records the lowest average NO2 levels among the village sensors at roughly 22 µg/m³.",
+
+"Water Orton Data Insight: - Sensors near main roads tend to record significantly higher NO2 pollution than quieter residential streets.",
+
+"Water Orton Data Insight: - Monitoring multiple locations helps reveal pollution hotspots that a single sensor could miss.",
+
+"Water Orton Data Insight: - Short pollution spikes lasting less than an hour are commonly detected by the village sensors.",
+
+"Water Orton Data Insight: - Pollution levels often increase during commuting hours due to higher vehicle traffic.",
+
+"Water Orton Data Insight: - Rainfall can temporarily improve air quality by washing particles out of the atmosphere.",
+
+"Water Orton Data Insight: - Calm wind conditions can trap pollution near the ground, increasing measured pollutant levels.",
+
+"Water Orton Data Insight: - Even small communities like Water Orton experience measurable air pollution from regional traffic and transport networks.",
+
+"Water Orton Data Insight: - Particulate pollution levels can fluctuate rapidly depending on weather, traffic, and nearby activities.",
+
+"Water Orton Data Insight: - Monitoring air quality locally provides valuable long-term data that national monitoring stations may miss.",
+
+"Water Orton Data Insight: - Some pollution events recorded in the village have approached or exceeded national safety thresholds.",
+
+"Water Orton Data Insight: - Air quality can vary significantly across different parts of the same village depending on nearby roads and pollution sources.",
+
+"Water Orton Data Insight: - Continuous monitoring allows trends to be tracked over months and years, helping identify seasonal pollution patterns.",
+
+"Water Orton Data Insight: - The village monitoring project helps create a detailed local pollution dataset for the community.",
+
+"Water Orton Data Insight: - Traffic emissions remain the primary source of NO2 detected by local sensors.",
+
+"Water Orton Data Insight: - Short bursts of high particulate pollution can occur even when the daily average appears low.",
+
+"Water Orton Data Insight: - Air pollution is often invisible — sensors frequently detect elevated particles even on clear days.",
+
+"Water Orton Data Insight: - Long-term exposure to moderate pollution levels can still impact respiratory health.",
+
+"Water Orton Data Insight: - Temperature inversions during cold weather can trap pollution near ground level.",
+
+"Water Orton Data Insight: - Comparing multiple sensors helps identify the cleanest and most polluted areas of the village.",
+
+"Water Orton Data Insight: - Local monitoring helps communities better understand how pollution behaves in their environment.",
+
+"Water Orton Data Insight: - Pollution spikes are often short-lived but can still impact sensitive individuals.",
+
+"Water Orton Data Insight: - Long-term air monitoring helps measure progress toward cleaner air over time.",
+
+"Water Orton Data Insight: - Community-driven air quality monitoring provides valuable environmental awareness."
+
+"Water Orton Data Insight: - Some NO2 readings recorded in the village have been more than 7x higher than the typical background levels measured across the sensors.",
+
+"Water Orton Data Insight: - The highest pollution spikes recorded so far have occurred during warmer months when atmospheric conditions can trap pollutants near ground level.",
+
+"Water Orton Data Insight: - Local monitoring has revealed that pollution levels can vary dramatically even within a few hundred metres of distance.",
+
+"Water Orton Data Insight: - Some particulate spikes detected by the sensors were over ten times higher than typical daily PM10 readings.",
+
+"Water Orton Data Insight: - Even when the village average appears low, short spikes of pollution can still occur throughout the day.",
+
+"Water Orton Data Insight: - Pollution peaks recorded in the dataset often follow daily traffic patterns across nearby roads and commuter routes.",
+
+"Water Orton Data Insight: - The difference between the cleanest and most polluted sensor locations can exceed 20 µg/m³ in NO2 measurements.",
+
+"Water Orton Data Insight: - Pollution levels recorded overnight are sometimes lower due to reduced traffic activity in the area.",
+
+"Water Orton Data Insight: - Sensors occasionally detect rapid particulate increases caused by passing vehicles or road dust being disturbed.",
+
+"Water Orton Data Insight: - Pollution spikes lasting less than an hour are regularly captured thanks to the high-frequency sensor monitoring.",
+
+"Water Orton Data Insight: - The highest NO2 readings recorded in the dataset occurred during periods of calm wind conditions.",
+
+"Water Orton Data Insight: - Local air quality can change significantly within a single day depending on weather, traffic and atmospheric conditions.",
+
+"Water Orton Data Insight: - The monitoring network across Water Orton helps identify pollution patterns that would otherwise go unnoticed.",
+
+"Water Orton Data Insight: - Some of the lowest pollution readings recorded occurred following rainfall events which help remove airborne particles.",
+
+"Water Orton Data Insight: - Local sensors have detected pollution spikes that were not visible to the naked eye, highlighting the importance of monitoring.",
+
+"Water Orton Data Insight: - The difference between the highest and lowest daily readings across sensors demonstrates how localised pollution can be.",
+
+"Water Orton Data Insight: - Monitoring across multiple locations helps identify pollution hotspots within the village environment.",
+
+"Water Orton Data Insight: - Even moderate increases in traffic flow can produce measurable increases in NO2 levels recorded by roadside sensors.",
+
+"Water Orton Data Insight: - Long-term monitoring allows seasonal pollution patterns to be identified across the village.",
+
+"Water Orton Data Insight: - Community air monitoring helps build a detailed local environmental dataset for future research and awareness."
 ]
+
 
 # --- Twitter and Airly Credentials ---
 TWITTER_API_KEY = os.getenv('TWITTER_API_KEY')
@@ -373,6 +474,7 @@ def main():
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     main()
+
 
 
 
