@@ -20,6 +20,7 @@ def get_time_of_day():
     else:
         return "this evening"
 
+
 TEMPLATES = {
     "low": [
         "🍃 Low pollution: The air in Water Orton is fresh and clean {time_of_day}. A great day for outdoor activities.",
